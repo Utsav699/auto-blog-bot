@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>DG Blog Automation - Premium Publisher</title>
+
+  <!-- Google Fonts Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "Outfit", "sans-serif"],
+            display: ["Outfit", "sans-serif"]
+          },
+          colors: {
+            brand: {
+              50: "#eeefff",
+              100: "#e0e1ff",
+              200: "#c5c7ff",
+              300: "#a2a4ff",
+              400: "#7e80ff",
+              500: "#6366f1", /* Elegant Indigo */
+              600: "#4f46e5",
+              700: "#4338ca",
+              800: "#3730a3",
+              900: "#312e81",
+              accent: "#4f46e5"
+            },
+            light: {
+              50: "#f8fafc",
+              100: "#f1f5f9",
+              200: "#e2e8f0",
+              300: "#cbd5e1"
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="./style.css" />
+  
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    h1, h2, h3, button {
+      font-family: 'Outfit', sans-serif;
+    }
+    /* Soft light glowing mesh backdrops */
+    .glow-blob {
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(244, 245, 247, 0) 70%, transparent 100%);
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .glow-blob-1 { top: -5%; left: -5%; animation: float 15s infinite ease-in-out alternate; }
+    .glow-blob-2 { bottom: -5%; right: -5%; animation: float 20s infinite ease-in-out alternate-reverse; }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 20px) scale(1.05); }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-800 flex items-center justify-center relative overflow-x-hidden py-12 px-4">
+  <!-- Glowing Background Decors -->
+  <div class="glow-blob glow-blob-1"></div>
+  <div class="glow-blob glow-blob-2"></div>
+
+  <main class="w-full max-w-2xl relative z-10">
+    <section class="backdrop-blur-md bg-white/90 border border-slate-200/80 rounded-3xl shadow-[0_20px_50px_rgba(15,23,42,0.04)] p-6 sm:p-10 transition-all duration-300">
+      
+      <!-- Top Branding Section -->
+      <div class="mb-10 text-center sm:text-left relative">
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-700 text-xs font-semibold uppercase tracking-wider mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-600 animate-pulse"></span>
+          Senior Production Bot v2.0
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+          DG Blog Automation
+        </h1>
+        <p class="mt-3 text-slate-500 text-sm sm:text-base leading-relaxed max-w-xl">
+          Instantly draft professional blogs using Groq AI, compress high-fidelity image buffers, and deploy immediately to GitHub and Sheets.
+        </p>
+      </div>
+
+      <!-- Main Form -->
+      <form id="blogForm" enctype="multipart/form-data" class="space-y-6">
+        
+        <!-- Blog Title Input -->
+        <div class="space-y-2">
+          <label for="title" class="block text-sm font-semibold text-slate-700 tracking-wide">
+            Blog Title <span class="text-brand-600">*</span>
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="e.g. The Future of Clean Energy Solutions in India"
+            required
+            class="w-full rounded-xl bg-slate-50/50 border border-slate-200 px-4 py-3.5 text-base text-slate-800 placeholder-slate-400 outline-none transition duration-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 focus:bg-white"
+          />
+        </div>
+
+        <!-- Category Dropdown -->
+        <div class="space-y-2">
+          <label for="category" class="block text-sm font-semibold text-slate-700 tracking-wide">
+            Publishing Category <span class="text-brand-600">*</span>
+          </label>
+          <div class="relative">
+            <select
+              id="category"
+              name="category"
+              required
+              class="w-full rounded-xl bg-slate-50/50 border border-slate-200 px-4 py-3.5 text-base text-slate-800 outline-none transition duration-200 appearance-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 focus:bg-white cursor-pointer"
+            >
+              <option value="" disabled selected class="text-slate-400">Select category</option>
+              <option value="Finance" class="text-slate-800">Finance</option>
+              <option value="Health" class="text-slate-800">Health</option>
+              <option value="Govt Jobs" class="text-slate-800">Govt Jobs</option>
+              <option value="Technology" class="text-slate-800">Technology</option>
+              <option value="Cricket" class="text-slate-800">Cricket</option>
+              <option value="India" class="text-slate-800">India</option>
+              <option value="Other" class="text-slate-800">Other (Custom Category)</option>
+            </select>
+            <!-- Custom Dropdown Arrow -->
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Category Box -->
+        <div id="customCategoryBox" class="hidden space-y-2 transition-all duration-300">
+          <label for="customCategory" class="block text-sm font-semibold text-slate-700 tracking-wide">
+            Custom Category Title <span class="text-brand-600">*</span>
+          </label>
+          <input
+            type="text"
+            id="customCategory"
+            name="customCategory"
+            placeholder="Enter custom category"
+            class="w-full rounded-xl bg-slate-50/50 border border-slate-200 px-4 py-3.5 text-base text-slate-800 placeholder-slate-400 outline-none transition duration-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 focus:bg-white"
+          />
+        </div>
+
+        <!-- Upload Image grid (Image 1 and 2 side by side on desktop) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+          
+          <!-- Image 1 Container -->
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-700 tracking-wide">
+              Cover Image <span class="text-slate-400 font-normal">(Optional)</span>
+            </label>
+            
+            <div class="flex flex-col gap-3">
+              <!-- Upload Area Style -->
+              <div class="relative group">
+                <input
+                  type="file"
+                  id="image1"
+                  name="image1"
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
+                  class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+                <div class="w-full rounded-xl border border-dashed border-slate-200 group-hover:border-brand-500/60 bg-slate-50/50 group-hover:bg-slate-100/50 px-4 py-6 text-center transition duration-200 flex flex-col items-center justify-center gap-2">
+                  <svg class="w-8 h-8 text-slate-400 group-hover:text-brand-500 transition duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2.5 2.5 0 013.536 0L17 16m-2-2l1.586-1.586a2.5 2.5 0 013.536 0L21 14m-9-4h.01M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-800 transition duration-200">Choose cover file</span>
+                  <span class="text-[10px] text-slate-400">PNG, JPG, WEBP up to 5MB</span>
+                </div>
+              </div>
+
+              <!-- Preview Zone (Display at original aspect ratio, fit naturally without cropping) -->
+              <div id="image1PreviewBox" class="hidden relative w-full rounded-xl border border-slate-200 overflow-hidden bg-slate-100 p-2">
+                <img id="image1Preview" src="" alt="Cover Image Preview" class="w-full h-auto max-h-72 object-contain rounded-lg" />
+                <button
+                  type="button"
+                  id="removeImage1"
+                  class="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-900/80 hover:bg-red-600 text-white text-sm font-bold flex items-center justify-center active:scale-95 transition shadow-md"
+                  title="Remove Image"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <p id="image1Error" class="hidden mt-2 text-xs font-medium text-red-500"></p>
+          </div>
+
+          <!-- Image 2 Container -->
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-700 tracking-wide">
+              Secondary Image <span class="text-slate-400 font-normal">(Optional)</span>
+            </label>
+            
+            <div class="flex flex-col gap-3">
+              <!-- Upload Area Style -->
+              <div class="relative group">
+                <input
+                  type="file"
+                  id="image2"
+                  name="image2"
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
+                  class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+                <div class="w-full rounded-xl border border-dashed border-slate-200 group-hover:border-brand-500/60 bg-slate-50/50 group-hover:bg-slate-100/50 px-4 py-6 text-center transition duration-200 flex flex-col items-center justify-center gap-2">
+                  <svg class="w-8 h-8 text-slate-400 group-hover:text-brand-500 transition duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2.5 2.5 0 013.536 0L17 16m-2-2l1.586-1.586a2.5 2.5 0 013.536 0L21 14m-9-4h.01M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-800 transition duration-200">Choose secondary file</span>
+                  <span class="text-[10px] text-slate-400">PNG, JPG, WEBP up to 5MB</span>
+                </div>
+              </div>
+
+              <!-- Preview Zone (Display at original aspect ratio, fit naturally without cropping) -->
+              <div id="image2PreviewBox" class="hidden relative w-full rounded-xl border border-slate-200 overflow-hidden bg-slate-100 p-2">
+                <img id="image2Preview" src="" alt="Secondary Image Preview" class="w-full h-auto max-h-72 object-contain rounded-lg" />
+                <button
+                  type="button"
+                  id="removeImage2"
+                  class="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-900/80 hover:bg-red-600 text-white text-sm font-bold flex items-center justify-center active:scale-95 transition shadow-md"
+                  title="Remove Image"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <p id="image2Error" class="hidden mt-2 text-xs font-medium text-red-500"></p>
+          </div>
+
+        </div>
+
+        <!-- Submit button -->
+        <button
+          type="submit"
+          id="submitBtn"
+          class="w-full relative overflow-hidden group rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 px-5 py-4 text-base font-bold text-white transition duration-200 hover:scale-[1.01] active:scale-95 disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-400 disabled:scale-100 shadow-md shadow-brand-500/10 hover:shadow-lg disabled:shadow-none"
+        >
+          <span class="relative z-10">Generate & Publish Blog</span>
+          <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out"></div>
+        </button>
+
+        <!-- Progress Box -->
+        <div id="progressBox" class="hidden mt-8 p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 tracking-wide">Automation Progress</span>
+            <span id="progressText" class="text-sm font-black text-brand-600">0%</span>
+          </div>
+
+          <div class="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden p-[2px] border border-slate-300/40">
+            <div
+              id="progressBar"
+              class="h-full bg-gradient-to-r from-brand-600 to-indigo-400 rounded-full transition-all duration-300 ease-linear"
+              style="width: 0%"
+            ></div>
+          </div>
+
+          <p id="progressMessage" class="text-xs text-slate-500 italic animate-pulse">
+            Waiting to start...
+          </p>
+        </div>
+      </form>
+
+      <!-- Status Alert Box -->
+      <div
+        id="status"
+        class="hidden mt-8 rounded-2xl p-4 text-sm leading-relaxed"
+      ></div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
