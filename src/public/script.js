@@ -23,9 +23,19 @@ const progressBar = document.getElementById("progressBar");
 const progressText = document.getElementById("progressText");
 const progressMessage = document.getElementById("progressMessage");
 
-const MAX_IMAGE_SIZE_MB = 5;
+/**
+ * Vercel Serverless Function payload limit is around 4.5MB.
+ * Multipart/form-data adds extra overhead, so frontend image limit should stay lower.
+ */
+const MAX_IMAGE_SIZE_MB = 3.5;
 const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp"
+];
 
 let progress = 0;
 let progressInterval = null;
@@ -105,7 +115,7 @@ function validateImageFile(input, label, errorElement) {
   return true;
 }
 
-function previewImage(input, previewBox, previewImage, errorElement, label) {
+function previewImage(input, previewBox, previewImageElement, errorElement, label) {
   const isValid = validateImageFile(input, label, errorElement);
 
   if (!isValid) return;
@@ -114,21 +124,33 @@ function previewImage(input, previewBox, previewImage, errorElement, label) {
 
   if (!file) {
     previewBox.classList.add("hidden");
-    previewImage.src = "";
+    previewImageElement.src = "";
     return;
   }
 
   const imageUrl = URL.createObjectURL(file);
-  previewImage.src = imageUrl;
+  previewImageElement.src = imageUrl;
   previewBox.classList.remove("hidden");
 }
 
 image1Input.addEventListener("change", () => {
-  previewImage(image1Input, image1PreviewBox, image1Preview, image1Error, "Image 1");
+  previewImage(
+    image1Input,
+    image1PreviewBox,
+    image1Preview,
+    image1Error,
+    "Image 1"
+  );
 });
 
 image2Input.addEventListener("change", () => {
-  previewImage(image2Input, image2PreviewBox, image2Preview, image2Error, "Image 2");
+  previewImage(
+    image2Input,
+    image2PreviewBox,
+    image2Preview,
+    image2Error,
+    "Image 2"
+  );
 });
 
 removeImage1.addEventListener("click", () => {
@@ -225,6 +247,36 @@ function validateImageCountAndSize() {
   }
 }
 
+async function parseApiResponse(response) {
+  const contentType = response.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    return response.json();
+  }
+
+  const text = await response.text();
+
+  if (response.status === 413 || text.includes("Request Entity Too Large")) {
+    throw new Error(
+      `Uploaded image is too large for Vercel. Please use images below ${MAX_IMAGE_SIZE_MB}MB each.`
+    );
+  }
+
+  if (response.status === 504) {
+    throw new Error(
+      "Request timed out. Blog generation took too long. Please try again with a shorter title or smaller images."
+    );
+  }
+
+  if (response.status >= 500) {
+    throw new Error(
+      text || "Internal server error. Please check Vercel function logs."
+    );
+  }
+
+  throw new Error(text || `Request failed with status ${response.status}`);
+}
+
 categorySelect.addEventListener("change", () => {
   if (categorySelect.value === "Other") {
     customCategoryBox.classList.remove("hidden");
@@ -279,10 +331,10 @@ form.addEventListener("submit", async (event) => {
       body: formData
     });
 
-    const data = await response.json();
+    const data = await parseApiResponse(response);
 
     if (!response.ok || !data.success) {
-      throw new Error(data.message || "Blog generation failed.");
+      throw new Error(data.message || data.error || "Blog generation failed.");
     }
 
     finishProgressSuccess();

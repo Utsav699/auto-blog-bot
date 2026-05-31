@@ -52,7 +52,7 @@ export default {
   },
   allowedCategories: ["Finance", "Health", "Govt Jobs", "Technology", "Cricket", "India", "Other"],
   upload: {
-    maxFileSizeMB: 5,
+    maxFileSizeMB: 3.5,
     allowedMimeTypes: ["image/jpeg", "image/jpg", "image/png", "image/webp"]
   },
   imageCompression: {
