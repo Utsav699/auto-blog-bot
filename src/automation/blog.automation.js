@@ -1,4 +1,4 @@
-import config from "../config.js";
+import config, { getMissingGenerationEnv } from "../config.js";
 import logger from "../logger.js";
 import { createBlogPost } from "../services/blog.service.js";
 import { processUploadedImages } from "../services/upload.service.js";
@@ -21,6 +21,13 @@ export async function generateBlogFromForm({
   let blog = {};
 
   try {
+    const missingEnv = getMissingGenerationEnv();
+    if (missingEnv.length) {
+      const error = new Error(`Missing required Vercel environment variables: ${missingEnv.join(", ")}`);
+      error.status = 500;
+      throw error;
+    }
+
     logger.info("======================================");
     logger.info("Manual blog generation started");
     logger.info(`Input title: ${title}`);
